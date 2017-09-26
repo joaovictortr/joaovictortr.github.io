@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="João Victor Risso's Blog, ">
+
+        <link rel="alternate"  href="https://joaovictortr.me/feeds/all.atom.xml" type="application/atom+xml" title="João Victor Risso's Blog Full Atom Feed"/>
+
+        <title>Introduction to Python Decorators // João Victor Risso's Blog // </title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://joaovictortr.me/theme/css/pure.css">
+    <link rel="stylesheet" href="https://joaovictortr.me/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background: none repeat scroll 0% 0% #3D4F5D">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="https://joaovictortr.me/images/prof_bild.jpg">
+                            <h1 class="brand-main"><a href="https://joaovictortr.me">João Victor Risso's Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                    <a href="https://github.com/joaovictortr">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="https://twitter.com/joaovictortr_">
+                                        <i class="fa fa-twitter-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://joaovictortr.me/feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Introduction to Python&nbsp;Decorators</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://joaovictortr.me/tag/python.html">python</a>
+                                <a class="post-category" href="https://joaovictortr.me/tag/decorators.html">decorators</a>
+                        </p>
+                </header>
+            </section>
+            <p>Decorators are supported by the Python language, and can wrap functions and classes, adding extra capabilites or management functionality (e.g. checking if the user is logged in, before executing a function). In this post, the basic concepts and syntax of Python decorators will be&nbsp;introduced.</p>
+<h3>Introduction</h3>
+<p>A decorator is callable object (e.g. function or class method), which allows the user to augment or add management functionality to functions and classes. Decorators are an extension to the Python language syntax, they were first introduced in <a href="https://www.python.org/dev/peps/pep-0318/"><span class="caps">PEP</span> 318</a>, and implemented in Python 2.4. Python decorators are related to the decorator design pattern, however they also support other use cases, e.g. static methods in&nbsp;classes.</p>
+<p>Decorator functionality can also be manually implemented (e.g. helper functions), however there are some advantages to their usage. Decorator syntax is explicit, which makes your code more idiomatic and easier to maintain, since it is easier to spot a decorator than a call to a helper function inside the code, especially if your function or class is complex. They are applied once, when the function or class is defined, thus eliminating the need to repeat the decorator code (which may change), whenever the decorated function or class is called or instantiated. Therefore, decorators facilitate code maintenance and encapsulation. There are also some drawbacks to using decorators, since they can alter the types of decorated objects, as well as add extra calls to functions, since they add a layer of&nbsp;encapsulation.</p>
+<p>In the Python language, there are two basic kinds of decorators: function and class decorators. Function decorators perform automatic name rebinding a function definition time, which enables managing functions and methods, or later calls to them. Class decorators perform automatic name rebinding at class decoration time, which allows managing class instances and their interfaces, as well as later calls to the decorated classes. The implementation aspects of the rebinding will be presented&nbsp;shortly.</p>
+<p>Function and class decorators can be used as call and object interface proxies, respectively. Function decorators add a wrapper object to a function, and can forward the function call to the managed object when called. Class decorators add a wrapper object to a class, and can intercept instance creation calls, attribute accesses and method calls, usually forwarding these actions to the managed class as well. Decorators can also be used to manage function and class objects, e.g. to register a function in an <span class="caps">API</span>.</p>
+<h2>Prerequisites</h2>
+<p>For this post, it is assumed that you are familiar with:
+<em> Python 2/3 syntax
+</em> Basic Python knowledge of classes and&nbsp;functions</p>
+<p>To run the examples, you must also have Python 2/3 installed in your&nbsp;system.</p>
+<h3>Using&nbsp;Decorators</h3>
+<p>A function decorator is a runtime construct, which is executed after the function definition, i.e. after the <em>def</em> block. It automatically rebinds the function to a metafunction (<em>i.e.</em> a function that receives a function as a parameter). The decorator is coded in the line before the function or method definition, using the &#8216;@&#8217; character followed by the name of the decorator function (or&nbsp;metafunction).</p>
+<p>Let&#8217;s start with a simple&nbsp;example:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="c1"># do some processing with F</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># returns F, which is a callable object (i.e. function)</span>
+    <span class="k">return</span> <span class="n">F</span>
+
+<span class="c1"># The @decorator will automatically rebind myFunc to:</span>
+<span class="c1">#     myFunc = decorator(myFunc)</span>
+<span class="c1"># after the myFunc declaration</span>
+<span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">myFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>  
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="c1"># myFunc call is equivalent to decorator(myFunc)(&#39;hello, world&#39;)</span>
+<span class="c1"># and should print &#39;hello, world&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">myFunc</span><span class="p">(</span><span class="s1">&#39;hello, world&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>In this example, myFunc is decorated with the &#8216;decorator&#8217; metafunction, and it also shows the usage of the &#8216;@&#8217; character to declare the use of the decorator with a function. Python takes care of rebinding the definition of <code>myFunc</code> to <code>decorator(myFunc)</code> after the function declaration. However, not only functions but classes can also be decorated, and the language provides standard decorators to support the implementation of static methods and class&nbsp;attributes.</p>
+<p>Alternatively, the simple example can be rewritten as class wrapper, instead of a&nbsp;function:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">decorator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decorated_func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">decorated_func</span>
+
+    <span class="c1"># Providing a call method makes decorator objects callable</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<span class="c1"># The @decorator will automatically rebind myFunc to:</span>
+<span class="c1">#     myFunc = decorator(myFunc)</span>
+<span class="c1"># after the myFunc declaration</span>
+<span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">myFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="c1"># myFunc call is equivalent to decorator(myFunc)(&#39;hello, world&#39;)</span>
+<span class="c1"># and should print &#39;hello, world&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">myFunc</span><span class="p">(</span><span class="s1">&#39;hello, world&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>It works similarly to the function decorator version for functions, however it does not work with class methods. Class methods require an instance to be called, and when the decorated object is called, the arguments list (<code>*args</code>) does not include the class&nbsp;instance.</p>
+<p>In order to also support class methods, a better approach is to use a nested wrapper&nbsp;function:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">F</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Execute decorated function and return result</span>
+    <span class="k">return</span> <span class="n">wrapper_func</span> <span class="c1"># Return wrapper_func, which is a callable</span>
+
+<span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">myFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="c1"># myFunc call is equivalent to decorator(myFunc)(&#39;hello, world&#39;)</span>
+<span class="c1"># and should print &#39;hello, world&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">myFunc</span><span class="p">(</span><span class="s1">&#39;hello, world&#39;</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">EchoClass</span><span class="p">:</span>
+    <span class="nd">@decorator</span>
+    <span class="k">def</span> <span class="nf">echo_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="n">EchoClass</span><span class="p">()</span>
+<span class="c1"># e.echo_value call is equivalent to</span>
+<span class="c1">#     decorator(echo_value)(e, &#39;hello, world&#39;)</span>
+<span class="c1"># and should print &#39;hello, world&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">echo_value</span><span class="p">(</span><span class="s1">&#39;hello, world&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Python binds the class method to the decorator, when the decorator object (<code>wrapper_func</code>) is called, the class instance is passed in the arguments list (<code>*args</code>), and the class method is properly&nbsp;executed.</p>
+<h3>Nesting&nbsp;Decorators</h3>
+<p>Several decorators can be applied to any given callable object, and the syntax is exactly the same as is used for a single decorators. The only difference is that one decorator must declared per line, and their calls are nested from top to&nbsp;bottom.</p>
+<p>Our nested function example from the previous section is used again here, and we&#8217;ll decorate our function and class with three&nbsp;decorators: </p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decoratorA</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">F</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Execute decorated function and return result</span>
+    <span class="k">return</span> <span class="n">wrapper_func</span> <span class="c1"># Return wrapper_func, which is a callable</span>
+
+<span class="k">def</span> <span class="nf">decoratorB</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">F</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Execute decorated function and return result</span>
+    <span class="k">return</span> <span class="n">wrapper_func</span> <span class="c1"># Return wrapper_func, which is a callable</span>
+
+<span class="k">def</span> <span class="nf">decoratorC</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">F</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Execute decorated function and return result</span>
+    <span class="k">return</span> <span class="n">wrapper_func</span> <span class="c1"># Return wrapper_func, which is a callable</span>
+
+<span class="nd">@decoratorA</span>
+<span class="nd">@decoratorB</span>
+<span class="nd">@decoratorC</span>
+<span class="k">def</span> <span class="nf">myFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="c1"># myFunc call is equivalent to</span>
+<span class="c1">#     decoratorA(decoratorB)(decoratorC)(myFunc)(&#39;hello, world&#39;)</span>
+<span class="c1"># and should print &#39;hello, world&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">myFunc</span><span class="p">(</span><span class="s1">&#39;hello, world&#39;</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">EchoClass</span><span class="p">:</span>
+    <span class="nd">@decoratorA</span>
+    <span class="nd">@decoratorB</span>
+    <span class="nd">@decoratorC</span>
+    <span class="k">def</span> <span class="nf">echo_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+<span class="n">e</span> <span class="o">=</span> <span class="n">EchoClass</span><span class="p">()</span>
+<span class="c1"># e.echo_value call is equivalent to</span>
+<span class="c1">#     decoratorA(decoratorB)(decoratorC)(echo_value)(e, &#39;hello, world&#39;)</span>
+<span class="c1"># and should print &#39;hello, world&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">echo_value</span><span class="p">(</span><span class="s1">&#39;hello, world&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>In this case, our nested decorated function <code>myFunc</code></p>
+<div class="highlight"><pre><span></span><span class="nd">@decoratorA</span>
+<span class="nd">@decoratorB</span>
+<span class="nd">@decoratorC</span>
+<span class="k">def</span> <span class="nf">myFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>is equivalent&nbsp;to</p>
+<div class="highlight"><pre><span></span><span class="n">myFunc</span> <span class="o">=</span> <span class="n">decoratorA</span><span class="p">(</span><span class="n">decoratorB</span><span class="p">(</span><span class="n">decoratorC</span><span class="p">(</span><span class="n">myFunc</span><span class="p">)))</span>
+</pre></div>
+
+
+<p>An interesting use case for nested decorators is, for example, nesting a logging decorator with a function call tracing decorator, such that the log is generated for that function and function call statistics can be collected. We&#8217;ll see an example of function call tracing in the following&nbsp;sections.</p>
+<p>Let&#8217;s see another example of nested&nbsp;decorators:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorator1</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">F</span><span class="p">:</span> <span class="n">F</span> <span class="o">+</span> <span class="s1">&#39;, how are you today?&#39;</span>
+
+<span class="k">def</span> <span class="nf">decorator2</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">F</span><span class="p">:</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="n">F</span>
+
+<span class="nd">@decorator1</span>
+<span class="nd">@decorator2</span>
+<span class="k">def</span> <span class="nf">myFunc</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">name</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">myFunc</span><span class="p">(</span><span class="s1">&#39;John Doe&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>A string with the user&#8217;s name is passed to <code>myFunc</code>, and we augment its result using <code>decorator1</code> and <code>decorator2</code> to provide a greeting message. This example should print &#8220;Hello, John Doe, how are you&nbsp;today?&#8221;.</p>
+<h3>Decorator&nbsp;Arguments</h3>
+<p>Since decorators are callable objects, they can also take any number of arguments. Adding arguments allows for keeping state inside the wrapper, besides the decorated function itself. The following example, shows a very simple decorator with takes two&nbsp;parameters:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">before_name</span><span class="p">,</span> <span class="n">after_name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorator_impl</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+        <span class="c1"># Return callable with concatenation of before_name, F and after_name</span>
+        <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">before_name</span> <span class="o">+</span> <span class="n">F</span><span class="p">()</span> <span class="o">+</span> <span class="n">after_name</span>
+    <span class="k">return</span> <span class="n">decorator_impl</span>
+
+<span class="n">before</span> <span class="o">=</span> <span class="s1">&#39;Hello &#39;</span>
+<span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;, how are you today?&#39;</span>
+
+<span class="nd">@decorator</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">greeting</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;John Doe&#39;</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">greeting</span><span class="p">())</span> <span class="c1"># Should print &#39;Hello John Doe, how are you today?&#39;</span>
+</pre></div>
+
+
+<p>Our decorator takes two parameters, <code>before_name</code> and <code>after_name</code>, which are strings to be concatenated to whatever string the decorated function returns. In order to return a callable, we wrap the concatenation of strings inside a lambda function. Lambda functions are callable objects which do not require naming, <em>i.e.</em> they are anonymous functions. The concatenated result returned by the lambda function is returned and the greeting message is printed to the&nbsp;user.</p>
+<h3>A More Concrete Example: Tracing Function&nbsp;Calls</h3>
+<p>Suppose you want to track the number of visits to a given web page. You setup a <span class="caps">HTTP</span> server and starts to listen for requests on your routes. For each registered route, you track how many times the response handler for that call is called. With that information, you can see how many times the route has been visited, through the number of times the handler has been&nbsp;called.</p>
+<p>In the following example, two routes are registered in the request handler (<code>ReqHandler</code>), one that responds with the current time and another that always respond with &#8216;Hello World&#8217;. Then, we setup the <code>trace_call</code> decorator in each of the registered response handlers, so that we can track how many times each handler is called. In order to track the number of calls, an attribute (<code>calls</code>) is added to the decorator&#8217;s <code>wrapper</code> object.</p>
+<p>When the decorator object is created, <em>i.e</em> after the declaration of the response handler, the call counter attribute is added to the decorator object. At each time the decorator object is called, the attribute is updated and the number of calls can be&nbsp;tracked.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">http.server</span>
+<span class="kn">import</span> <span class="nn">socketserver</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">8000</span>
+
+
+<span class="k">def</span> <span class="nf">trace_call</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wrapper</span><span class="o">.</span><span class="n">calls</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;{0} calls have been made to {1}&quot;</span>
+              <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="n">calls</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">F</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># Add the calls attribute to count how many times</span>
+    <span class="c1"># the decorated function F is called.</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">calls</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+
+<span class="k">class</span> <span class="nc">ReqHandler</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">BaseHTTPRequestHandler</span><span class="p">):</span>
+    <span class="c1"># GET route dispatcher</span>
+    <span class="c1"># All response handlers for routes are registered here</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/time&#39;</span><span class="p">:</span>
+            <span class="n">do_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/hello&#39;</span><span class="p">:</span>
+            <span class="n">do_hello</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="c1"># Response handler for &#39;/time&#39; route</span>
+<span class="nd">@trace_call</span>
+<span class="k">def</span> <span class="nf">do_time</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+    <span class="c1"># Write the HTML content</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="s2">&quot;Current time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+                         <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="c1"># Response handler for &#39;/hello&#39; route</span>
+<span class="nd">@trace_call</span>
+<span class="k">def</span> <span class="nf">do_hello</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="s1">&#39;Hello, world&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">socketserver</span><span class="o">.</span><span class="n">TCPServer</span><span class="p">((</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">PORT</span><span class="p">),</span> <span class="n">ReqHandler</span><span class="p">)</span> <span class="k">as</span> <span class="n">httpd</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;serving at port&quot;</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
+    <span class="n">httpd</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+</pre></div>
+
+
+<h3>Conclusion</h3>
+<p>In this post, we have covered the roles and the basic syntax of Python decorators. Decorators are powerful abstractions in the language, and are used to declare static methods and class attributes. A more concrete example which tracks the number of calls to functions was also presented, showing one of the capabilites of decorators. In the next posts, we&#8217;ll dive deeper into decorators and their applications in the context of&nbsp;classes.</p>
+            <a href="#" class="go-top">Go Top</a>
+    <div class="comments">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = "joaovictortrme"; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+<footer class="footer">
+    <p>&copy; João Victor Risso &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

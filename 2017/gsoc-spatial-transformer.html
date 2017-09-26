@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="João Victor Risso's Blog, ">
+
+        <link rel="alternate"  href="https://joaovictortr.me/feeds/all.atom.xml" type="application/atom+xml" title="João Victor Risso's Blog Full Atom Feed"/>
+
+        <title>GSoC - Spatial Transformer // João Victor Risso's Blog // </title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://joaovictortr.me/theme/css/pure.css">
+    <link rel="stylesheet" href="https://joaovictortr.me/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background: none repeat scroll 0% 0% #3D4F5D">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="https://joaovictortr.me/images/prof_bild.jpg">
+                            <h1 class="brand-main"><a href="https://joaovictortr.me">João Victor Risso's Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                    <a href="https://github.com/joaovictortr">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="https://twitter.com/joaovictortr_">
+                                        <i class="fa fa-twitter-square fa-3x"></i>
+                                    </a>
+                                    <a href="https://joaovictortr.me/feeds/all.atom.xml">
+                                        <i class="fa fa-rss fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>GSoC - Spatial&nbsp;Transformer</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="https://joaovictortr.me/tag/python.html">python</a>
+                                <a class="post-category" href="https://joaovictortr.me/tag/gsoc.html">gsoc</a>
+                        </p>
+                </header>
+            </section>
+            <p>Currently, I am working on the implementation of a wrapper over cuDNN functions
+to provide a Spatial Transformer in Theano. Today, I&#8217;ve got the first part of
+the transformer working. In this post, I&#8217;ll show a basic example of how to use
+this initial&nbsp;functionality.</p>
+<p>First, let&#8217;s obtain an image onto which we will apply some transformations. There
+is simple example image provided by scipy. Then, we&#8217;ll import scipy, matplotlib
+(to view the image), and then load the&nbsp;image:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">face</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Which should show the following&nbsp;image:</p>
+<p><img alt="Raccoon face image from scipy.misc module" src="https://joaovictortr.me/images/raccoon_face.png"></p>
+<p>Images are usually represented with (h, w, c) data layout, where h is the
+height, w is the width, and c is the number of color channels. Also, the pixel
+values are represented in a range of integer values in [0, 255]. When we pack
+a set of images with the data layout in a single Numpy array, we get a data
+layout of (n, h, w, c), where n is the number of images, becoming a 4-dimensional
+array (or a 4-D&nbsp;tensor).</p>
+<p>Since the spatial transformer utilizes a grid to sample data from the input, we
+must define its dimensions. If the width and height dimensions are bigger than
+the corresponding ones from the input image, we will perform oversampling, using
+bilinear interpolation. Conversely, by using a smaller width or height, we will
+perform an subsampling of the original image, also with bilinear&nbsp;interpolation.</p>
+<p>So, let&#8217;s define our grid dimensions as&nbsp;follows:</p>
+<div class="highlight"><pre><span></span><span class="c1"># shape: (num_images, channels, height, width)</span>
+<span class="n">grid_dims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The layout of the grid dimensions is given by the number of images, followed by
+the number of channels, height and width of these&nbsp;images.</p>
+<p>Packing images together is relevant in this case, since the spatial transformer
+functions from cuDNN expect a 4D data layout, we pack our original image in the
+(n, h, w, c), while adding more examples of the same image to the final&nbsp;array:</p>
+<div class="highlight"><pre><span></span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">[</span><span class="n">f</span><span class="p">])</span>
+</pre></div>
+
+
+<p>Also, our input images need to be normalized into the interval [-1, 1] (see the
+<a href="https://arxiv.org/abs/1506.02025">original paper</a> for more details). So we convert
+our images to float, then normalize&nbsp;them:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_input</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="c1"># Scale input from [0, 255] to [0, 2]</span>
+    <span class="n">scale_factor</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="o">-</span><span class="mi">7</span>  <span class="c1"># equivalent to 1 / 128</span>
+    <span class="nb">input</span> <span class="o">*=</span> <span class="n">scale_factor</span>
+    <span class="c1"># Re-scale input from [0, 2] to [-1, 1] (normalized)</span>
+    <span class="nb">input</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">input</span>
+
+<span class="n">img</span> <span class="o">=</span> <span class="n">normalize_input</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+</pre></div>
+
+
+<p>The <code>normalize_input</code> function takes the images as input, and normalizes the
+pixel values into the range [-1, 1]. Multiplication and subtraction work on
+each element of the array through <a href="https://docs.scipy.org/doc/numpy-1.12.0/user/basics.broadcasting.html">broadcasting</a>.</p>
+<p>Now, we have to obtain the transformation we want to apply on the image. The
+transformation is usually obtained from a localisation network, which must
+have a regression layer at the output layer. A localisation network can be
+built on top of already existing components of&nbsp;Theano.</p>
+<p>In this case, we&#8217;ll use a predefined transformation, to show how the spatial
+transformer works without the localisation net. Suppose we want to flip the
+image - rotate it by 180 degrees, in order to achieve that using an affine
+transformation, we have to define a rotation operation on our transformation&nbsp;matrix:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Rotation matrix for 180 degree rotation, including translation</span>
+<span class="n">rotate</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+          <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="c1"># One matrix is applied for each image, in this case we use the same matrix</span>
+<span class="c1"># for all images.</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">[</span><span class="n">rotate</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Spatial transformer also expects the data layout of the tensor to be in (n, c, h, w),
+instead of the (n, h, w, c) we have created, so we have to transpose the&nbsp;tensor:</p>
+<div class="highlight"><pre><span></span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+
+
+<p>We could also perform the transpose operation on a Theano symbolic variable,
+using the transpose function of <code>theano.tensor</code>.</p>
+<p>Now we are ready to transform the images, and then we instantiate the spatial&nbsp;transformer:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">theano.gpuarray.dnn</span> <span class="kn">import</span> <span class="n">dnn_spatialtf</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">dnn_spatialf</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">grid_dims</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Then, we have to compile and call a theano function to compute the transformed&nbsp;values:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Create theano function to compute transformation</span>
+<span class="n">fn</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">function</span><span class="p">([],</span> <span class="p">[</span><span class="n">transformer</span><span class="p">])</span>
+<span class="c1"># Compute transformation</span>
+<span class="n">out_img_gpu</span> <span class="o">=</span> <span class="n">fn</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Now, we have three things to&nbsp;consider:</p>
+<ol>
+<li>Results are in the <span class="caps">GPU</span> memory, so we have to copy them&nbsp;back</li>
+<li>Resulting values of the images are in the [-1, 1] range, so we have to rescale them to [0,&nbsp;255]</li>
+<li>Data layout of resulting images is (n, c, h, w), so we have to convert them to (n, h, w, c), in order to visualize the&nbsp;images.</li>
+</ol>
+<p>Which we will do&nbsp;next:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rescale_input</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="c1"># Re-scale output to range [0, 2]</span>
+    <span class="nb">input</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># Re-scale output to range [0, 255]</span>
+    <span class="nb">input</span> <span class="o">*=</span> <span class="mi">128</span>
+    <span class="k">return</span> <span class="nb">input</span>
+
+<span class="c1"># Copy results back from the GPU</span>
+<span class="n">out_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">out_img_gpu</span><span class="p">)</span>
+<span class="c1"># Re-scale values from [-1, 1] to [0, 255], and convert to uint8</span>
+<span class="n">out_img</span> <span class="o">=</span> <span class="n">rescale_input</span><span class="p">(</span><span class="n">out_img</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="c1"># Convert from NCHW to NHWC</span>
+<span class="n">out_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">out_img</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Finally, we can visualize our transformed&nbsp;images:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="k">for</span> <span class="n">img_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out_img</span><span class="p">)):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">out_img</span><span class="p">[</span><span class="n">img_idx</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Which would look like the&nbsp;following:</p>
+<p><img alt="Raccoon face image from scipy.misc module" src="https://joaovictortr.me/images/raccoon_face_flipped.png"></p>
+<p>In this case, the image is subsampled, because our grid dimensions are smaller
+than those of the original image. However, we can still see the original image&nbsp;flipped.</p>
+<p>That is it for today, however there are tasks left to complete the&nbsp;implementation:</p>
+<ul>
+<li>Add proper tests to the already implemented&nbsp;functionality</li>
+<li>Gradients are not yet supported, so one of the next steps is implementing the
+backward operations to implement the gradients (allowing&nbsp;backpropagation)</li>
+<li>Add proper tests also to the&nbsp;gradients</li>
+<li>Provide a functional example: I&#8217;m working with a <a href="https://github.com/Lasagne/Recipes/blob/master/examples/spatial_transformer_network.ipynb">Lasagne implementation</a>
+to build a neural net model that can be used with the <span class="caps">GPU</span> Spatial&nbsp;Transformer.</li>
+</ul>
+            <a href="#" class="go-top">Go Top</a>
+    <div class="comments">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = "joaovictortrme"; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+<footer class="footer">
+    <p>&copy; João Victor Risso &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
