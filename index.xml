@@ -21,5 +21,23 @@ The highlight features of Rocket.Chat are:
  Videoconferences Voice messages Native and mobile applications Filesharing Preview of links from popular sites (e.g. Facebook, Youtube)  Hardware Minimum hardware requirements to run a Rocket.Chat server are: * CPU: single core, with a clock of at least 2 GHz * Memory: 1 GB * Storage: 30 GB</description>
     </item>
     
+    <item>
+      <title>Projects</title>
+      <link>https://joaovictortr.github.io/projects/</link>
+      <pubDate>Wed, 16 May 2018 19:31:46 -0300</pubDate>
+      
+      <guid>https://joaovictortr.github.io/projects/</guid>
+      <description>Coming soon.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://joaovictortr.github.io/about/</link>
+      <pubDate>Wed, 16 May 2018 19:31:37 -0300</pubDate>
+      
+      <guid>https://joaovictortr.github.io/about/</guid>
+      <description>Coming soon.</description>
+    </item>
+    
   </channel>
 </rss>
