@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on João Victor Risso</title>
-    <link>joaovictortr.eti.br/posts/</link>
+    <link>joaovictortr.github.io/posts/</link>
     <description>Recent content in Posts on João Victor Risso</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Wed, 16 May 2018 19:41:34 -0300</lastBuildDate>
     
-	<atom:link href="joaovictortr.eti.br/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="joaovictortr.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Rocket.chat Server Setup on Reverse Proxy with SSL</title>
-      <link>joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</link>
+      <link>joaovictortr.github.io/posts/20180516-rocketchat-setup-debian-reverse-proxy/</link>
       <pubDate>Wed, 16 May 2018 19:41:34 -0300</pubDate>
       
-      <guid>joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</guid>
+      <guid>joaovictortr.github.io/posts/20180516-rocketchat-setup-debian-reverse-proxy/</guid>
       <description>Rocket.Chat is web chat server, with client for a wide range of platforms, including Android and iOS. It allows individuals, communities and companies to build and maintain their own chat platforms, without relying on third-party services.
 The highlight features of Rocket.Chat are:
  Videoconferences Voice messages Native and mobile applications Filesharing Preview of links from popular sites (e.g. Facebook, Youtube)  Hardware Minimum hardware requirements to run a Rocket.Chat server are: * CPU: single core, with a clock of at least 2 GHz * Memory: 1 GB * Storage: 30 GB</description>
