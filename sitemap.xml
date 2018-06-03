@@ -3,43 +3,43 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>joaovictortr.eti.br/posts/</loc>
+    <loc>https://joaovictortr.eti.br/posts/</loc>
     <lastmod>2018-06-03T17:54:34-03:00</lastmod>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</loc>
+    <loc>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</loc>
     <lastmod>2018-06-03T17:54:34-03:00</lastmod>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</loc>
+    <loc>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</loc>
     <lastmod>2018-05-16T19:41:34-03:00</lastmod>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/projects/</loc>
+    <loc>https://joaovictortr.eti.br/projects/</loc>
     <lastmod>2018-05-16T19:31:46-03:00</lastmod>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/about/</loc>
+    <loc>https://joaovictortr.eti.br/about/</loc>
     <lastmod>2018-05-16T19:31:37-03:00</lastmod>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/categories/</loc>
+    <loc>https://joaovictortr.eti.br/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/</loc>
+    <loc>https://joaovictortr.eti.br/</loc>
     <lastmod>2018-06-03T17:54:34-03:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>joaovictortr.eti.br/tags/</loc>
+    <loc>https://joaovictortr.eti.br/tags/</loc>
     <priority>0</priority>
   </url>
   
