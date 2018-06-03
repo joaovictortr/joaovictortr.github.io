@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on João Victor Risso</title>
-    <link>https://joaovictortr.github.io/tags/</link>
+    <link>joaovictortr.eti.br/tags/</link>
     <description>Recent content in Tags on João Victor Risso</description>
     <generator>Hugo -- gohugo.io</generator>
     
-	<atom:link href="https://joaovictortr.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="joaovictortr.eti.br/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>
