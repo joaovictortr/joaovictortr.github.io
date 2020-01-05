@@ -1,53 +1,50 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>João Victor Risso</title>
-    <link>https://joaovictortr.eti.br/</link>
-    <description>Recent content on João Victor Risso</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 03 Jun 2018 17:54:34 -0300</lastBuildDate>
-    
-	<atom:link href="https://joaovictortr.eti.br/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Pi-Hole Setup on Raspberry Pi 3</title>
-      <link>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</link>
-      <pubDate>Sun, 03 Jun 2018 17:54:34 -0300</pubDate>
-      
-      <guid>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</guid>
-      <description>In this post, I will cover how to install a Raspbian system from scratch, along with the setup of pi-hole, to block internet trackers on the network level.
-Pi-Hole serves both as a DNS forwarder and cache, and should be configured as the DNS server for your network. This guarantees that all users of your network will be automatically shielded from internet tracking. You also might notice a reduction in bandwidth usage, since assets from ad networks and trackers are not loaded because of the &amp;lsquo;blackholing&amp;rsquo;.</description>
-    </item>
-    
-    <item>
-      <title>Rocket.chat Server Setup on Reverse Proxy with SSL</title>
-      <link>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</link>
-      <pubDate>Wed, 16 May 2018 19:41:34 -0300</pubDate>
-      
-      <guid>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</guid>
-      <description>Rocket.Chat is web chat server, with client for a wide range of platforms, including Android and iOS. It allows individuals, communities and companies to build and maintain their own chat platforms, without relying on third-party services.
-The highlight features of Rocket.Chat are:
- Videoconferences Voice messages Native and mobile applications Filesharing Preview of links from popular sites (e.g. Facebook, Youtube)  Hardware Minimum hardware requirements to run a Rocket.Chat server are:</description>
-    </item>
-    
-    <item>
-      <title>Projects</title>
-      <link>https://joaovictortr.eti.br/projects/</link>
-      <pubDate>Wed, 16 May 2018 19:31:46 -0300</pubDate>
-      
-      <guid>https://joaovictortr.eti.br/projects/</guid>
-      <description>Coming soon.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://joaovictortr.eti.br/about/</link>
-      <pubDate>Wed, 16 May 2018 19:31:37 -0300</pubDate>
-      
-      <guid>https://joaovictortr.eti.br/about/</guid>
-      <description>Coming soon.</description>
-    </item>
-    
-  </channel>
-</rss>
+
+   <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+     <channel>
+       <title>João Victor Risso</title>
+       <link>https://joaovictortr.eti.br/</link>
+       <description>Recent content on João Victor Risso</description>
+       <generator>Hugo -- gohugo.io</generator>
+       <lastBuildDate>Sat, 04 Jan 2020 22:31:37 -0300</lastBuildDate>
+       
+           <atom:link href="https://joaovictortr.eti.br/index.xml" rel="self" type="application/rss+xml" />
+       
+       
+       <item>
+         <title>Posts</title>
+         <link>https://joaovictortr.eti.br/posts/</link>
+         <pubDate>Sun, 03 Jun 2018 17:54:34 -0300</pubDate>
+         
+         <guid>https://joaovictortr.eti.br/posts/</guid>
+         <description></description>
+       </item>
+       
+       <item>
+         <title>About</title>
+         <link>https://joaovictortr.eti.br/about/</link>
+         <pubDate>Sat, 04 Jan 2020 22:31:37 -0300</pubDate>
+         
+         <guid>https://joaovictortr.eti.br/about/</guid>
+         <description>&lt;p&gt;I am João Victor Risso. I am employed at &lt;a href=&#34;https://www.nubank.com.br/en&#34;&gt;Nubank&lt;/a&gt; in São Paulo as a data analyst. I earned a Masters in Computer Science (in High Performance Computing) from the &lt;a href=&#34;https://www.ufpr.br&#34;&gt;Federal University of Paraná&lt;/a&gt;, Curitiba. I also did my undergraduate degree at the Federal University of Paraná, and I was lucky to go on two exchange programs with the &lt;a href=&#34;https://www.fau.eu&#34;&gt;Friedrich-Alexander University&lt;/a&gt; in Erlangen, where I&#39;ve worked with the &lt;a href=&#34;http://www.walberla.net&#34;&gt;waLBerla framework&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;My interests revolve around:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Design, algorithms and operations of large-scale data-intensive systems.&lt;/li&gt;
+&lt;li&gt;Privacy and anonymity online&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This blog is a presentation of my learnings, ideas I have, solutions I come across, notes on certain topics. In short, my explorations for knowledge that are (hopefully) useful for readers.&lt;/p&gt;
+&lt;p&gt;All opinions emitted in this blog are my own and do not reflect the views of my current or past employers.&lt;/p&gt;
+</description>
+       </item>
+       
+       <item>
+         <title>Projects</title>
+         <link>https://joaovictortr.eti.br/projects/</link>
+         <pubDate>Wed, 16 May 2018 19:31:46 -0300</pubDate>
+         
+         <guid>https://joaovictortr.eti.br/projects/</guid>
+         <description>&lt;p&gt;Coming soon.&lt;/p&gt;
+</description>
+       </item>
+       
+     </channel>
+   </rss>

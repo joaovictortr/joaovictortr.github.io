@@ -7,13 +7,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="João Victor Risso&#39;s Weblog" />
-  <meta name="author" content="João Victor Risso" />
-  <meta name="generator" content="Hugo 0.31" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <meta name="author" content="João Victor Risso" /><meta name="generator" content="Hugo 0.62.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" />
+  <script src="https://kit.fontawesome.com/b76b73e8e8.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
-  <link rel="stylesheet" type="text/css" href="/css/styles.css" />
-</head>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css" /></head>
 
 <body>
   <div id="container">
@@ -23,16 +21,16 @@
             </h1>
 
       <ul id="social-media">
+        
+        
+          
+        <li><a href="https://github.com/joaovictortr"><i class="fab fa-github fa-lg" aria-hidden="true"></i></a></li>
          
-        <li><a href="https://www.linkedin.com/in/jo%c3%a3o-victor-risso-aa7580165"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-         
-        <li><a href="https://github.com/joaovictortr"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a></li>
-         
-        <li><a href="https://gitlab.com/joaovictortr"><i class="fa fa-gitlab fa-lg" aria-hidden="true"></i></a></li>
+        <li><a href="https://gitlab.com/joaovictortr"><i class="fab fa-gitlab fa-lg" aria-hidden="true"></i></a></li>
           
       </ul>
       
-      <p><em>Posts on HPC, Data Analysis, Technology and random stuff</em></p>
+      <p><em>Writes About Stuff</em></p>
       
     </header>
 
@@ -41,32 +39,25 @@
     <ul>
         
         <li>
-            <a class="" href="https://joaovictortr.eti.br/">
+            <a class="" href="/">
                 <i class="fa-li fa  fa-lg"></i><span>Home</span>
             </a>
         </li>
         
         <li>
-            <a class="" href="https://joaovictortr.eti.br/about/">
+            <a class="" href="/about/">
                 <i class="fa-li fa  fa-lg"></i><span>About</span>
             </a>
         </li>
         
         <li>
-            <a class="" href="https://joaovictortr.eti.br/projects/">
-                <i class="fa-li fa  fa-lg"></i><span>Projects</span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="" href="https://joaovictortr.eti.br/posts/">
+            <a class="" href="/posts/">
                 <i class="fa-li fa  fa-lg"></i><span>Posts</span>
             </a>
         </li>
         
     </ul>
 </nav>
-
 
     <main>
 
@@ -84,23 +75,18 @@
             <time class="post-date" datetime="2018-06-03T17:54:34-03:00">Jun 3, 2018</time>
         </li>
         
-        
 
         
 
-        <li>7 min read</li>
+        <li>7 minutes read</li>
     </ul>
 </aside>
-    
 
     
 
-<p>In this post, I will cover how to install a Raspbian system from scratch, along with the setup of pi-hole, to block <a href="https://theconversation.com/someones-looking-at-you-welcome-to-the-surveillance-economy-16357">internet trackers</a> on the network level.</p>
-
+    <p>In this post, I will cover how to install a Raspbian system from scratch, along with the setup of pi-hole, to block <a href="https://theconversation.com/someones-looking-at-you-welcome-to-the-surveillance-economy-16357">internet trackers</a> on the network level.</p>
 <p>Pi-Hole serves both as a DNS <a href="http://social.dnsmadeeasy.com/blog/understanding-dns-forwarding/">forwarder</a> and <a href="https://www.lifewire.com/what-is-a-dns-cache-817514">cache</a>, and should be configured as the DNS server for your network. This guarantees that all users of your network will be automatically shielded from internet tracking. You also might notice a reduction in bandwidth usage, since assets from ad networks and trackers are not loaded because of the &lsquo;blackholing&rsquo;. This process is explained further down in this post.</p>
-
 <p>In order to follow this tutorial, there are a few hardware requirements:</p>
-
 <ul>
 <li>Raspberri Pi, either version 2 or 3 should work.</li>
 <li>HDMI cable</li>
@@ -109,15 +95,11 @@
 <li>SD Card</li>
 <li>Ethernet cable, to connect the Pi to the router</li>
 </ul>
-
 <p>If you have Raspbian already setup, you can skip to the section &lsquo;Pi-hole and DNS Forwarding&rsquo;. Make sure, however, that your Raspbian has a static IP address setup for it.</p>
-
 <h2 id="raspbian-setup">Raspbian Setup</h2>
-
 <p>Insert the SD card in the computer, and check for its name using the following command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">lsblk</code></pre></div>
-<p>Which shows an output like the following:</p>
-
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">lsblk
+</code></pre></div><p>Which shows an output like the following:</p>
 <pre><code>NAME            MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 sda               8:0    0 931,5G  0 disk 
 ├─sda1            8:1    0   512M  0 part /boot/efi
@@ -131,19 +113,14 @@ mmcblk0         179:0    0  14,9G  0 disk
 ├─mmcblk0p5     179:5    0    32M  0 part 
 ├─mmcblk0p6     179:6    0    69M  0 part 
 └─mmcblk0p7     179:7    0  13,2G  0 part 
-</code></pre>
-
-<p>In this case, <code>sda</code> is the hard drive from the computer, and <code>mmcblk0</code> is the SD card. Therefore, <code>mmcblk0</code> is the device we must use to flash the SD card. Beware, that (wrongly) writing to the hard drive would corrupt your filesystem!</p>
-
+</code></pre><p>In this case, <code>sda</code> is the hard drive from the computer, and <code>mmcblk0</code> is the SD card. Therefore, <code>mmcblk0</code> is the device we must use to flash the SD card. Beware, that (wrongly) writing to the hard drive would corrupt your filesystem!</p>
 <p>Download the Raspbian Lite image from the Raspbian website. Then, we extract the image and write its contents to the SD card using the <code>dd</code> Linux utility, as follows:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">unzip <span class="m">2018</span>-04-18-raspbian-stretch-lite.zip <span class="o">&amp;&amp;</span> <span class="se">\
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">unzip 2018-04-18-raspbian-stretch-lite.zip <span class="o">&amp;&amp;</span> <span class="se">\
 </span><span class="se"></span>sudo dd <span class="nv">bs</span><span class="o">=</span>4M <span class="nv">conv</span><span class="o">=</span>fsync <span class="nv">status</span><span class="o">=</span>progress <span class="se">\
-</span><span class="se"></span>    <span class="k">if</span><span class="o">=</span><span class="m">2018</span>-04-18-raspbian-stretch-lite.img <span class="se">\
-</span><span class="se"></span>    <span class="nv">of</span><span class="o">=</span>/dev/mmcblk0</code></pre></div>
-<p>In Unix and Linux operating systems, everything is represented as a file, including disks and SD cards. <code>dd</code> takes the content of a file specified by <code>if</code> and writes its contents to the file <code>of</code>. In our case, we are taking an input file (<code>2018-04-18-raspbian-stretch-lite.img</code>) and writing it to a special file (<code>/dev/mmcblk0</code>), which represents the SD card.</p>
-
+</span><span class="se"></span>    <span class="k">if</span><span class="o">=</span>2018-04-18-raspbian-stretch-lite.img <span class="se">\
+</span><span class="se"></span>    <span class="nv">of</span><span class="o">=</span>/dev/mmcblk0
+</code></pre></div><p>In Unix and Linux operating systems, everything is represented as a file, including disks and SD cards. <code>dd</code> takes the content of a file specified by <code>if</code> and writes its contents to the file <code>of</code>. In our case, we are taking an input file (<code>2018-04-18-raspbian-stretch-lite.img</code>) and writing it to a special file (<code>/dev/mmcblk0</code>), which represents the SD card.</p>
 <p>The parameters passed to dd have the following meaning:</p>
-
 <ul>
 <li>if: stands for <em>input file</em>, the file from which the content will be read.</li>
 <li>of: stands for <em>output file</em>, the file to which the contents of <em>if</em> will be written.</li>
@@ -151,99 +128,74 @@ mmcblk0         179:0    0  14,9G  0 disk
 <li>conv: stands for <em>conversion</em>, it applies comma separated operations on top of the input file, before writing it to the output file. <code>fsync</code> ensures that the kernel writes the data to the output file as well as metadata to the physical device before finishing. This is required, because the kernel might not promptly write the data to the SD card, which would leave the SD card corrupt if we took it off the computer before all the data was written to it.</li>
 <li>status: amount of information printed to <code>stderr</code>. <code>progress</code> shows periodic transfer statistics, which allows one to track the speed and amount of data copied to the SD card.</li>
 </ul>
-
 <p>Depending on your disk and SD card performance, this might take a while as the image is around 1.7 GB large. After the data is written to the SD card, take it off the computer and put it in to the Raspberry Pi.</p>
-
 <p>Connect the Pi to an energy source, the keyboard and the monitor (using the HDMI cable). It should boot to a screen like the following:</p>
-
-<p><img src="https://i.imgur.com/lHoPtWO.jpg" alt="Raspbian 9 Login" /></p>
-
+<p><img src="https://i.imgur.com/lHoPtWO.jpg" alt="Raspbian 9 Login"></p>
 <p>Log in using <code>pi</code> as the username and <code>raspberry</code> as the password.
 Change the default password for <code>pi</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">passwd</code></pre></div>
-<p>You will have to provide the current password (<code>raspberry</code>), and type the new password twice (once more, for verification purposes).</p>
-
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">passwd
+</code></pre></div><p>You will have to provide the current password (<code>raspberry</code>), and type the new password twice (once more, for verification purposes).</p>
 <p>In the next section, a static IP address and SSH are setup, so there will be no more need for the monitor and keyboard.</p>
-
 <h3 id="static-ip-address">Static IP Address</h3>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">nano /etc/dhcpcd.conf</code></pre></div>
-<p>Add the following to the end of the file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">nano /etc/dhcpcd.conf
+</code></pre></div><p>Add the following to the end of the file:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">interface eth0
-static <span class="nv">ip_address</span><span class="o">=</span><span class="m">192</span>.168.0.2/24
-static <span class="nv">routers</span><span class="o">=</span><span class="m">192</span>.168.0.1
-static <span class="nv">domain_name_servers</span><span class="o">=</span><span class="m">208</span>.67.220.220</code></pre></div>
-<p>In your setup, replace the:</p>
-
+static <span class="nv">ip_address</span><span class="o">=</span>192.168.0.2/24
+static <span class="nv">routers</span><span class="o">=</span>192.168.0.1
+static <span class="nv">domain_name_servers</span><span class="o">=</span>208.67.220.220
+</code></pre></div><p>In your setup, replace the:</p>
 <ul>
 <li>IP address (<code>ip_address</code>) with the local IP address of the Pi in your network, in this case <code>192.168.0.2</code> with a network mask of 24 bits, i.e. <code>255.255.255.0</code>.</li>
 <li><code>routers</code> with the IP address of your router, in this case it is <code>192.168.0.1</code>.</li>
-<li><code>domain_name_servers</code> with the IP address of the DNS resolver for your network. If you don&rsquo;t know what is the IP address of your DNS resolver, you can use either <code>8.8.8.8</code> (Google DNS) or <code>1.1.1.1</code> (Cloudflare DNS).</li>
+<li><code>domain_name_servers</code> with the IP address of the DNS resolver for your network. If you don't know what is the IP address of your DNS resolver, you can use either <code>8.8.8.8</code> (Google DNS) or <code>1.1.1.1</code> (Cloudflare DNS).</li>
 </ul>
-
 <h3 id="ssh-setup">SSH Setup</h3>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">systemctl <span class="nb">enable</span> ssh.service
-systemctl start ssh.service</code></pre></div>
-<p>After configuring the static IP adress and SSH, reboot the Pi:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo reboot</code></pre></div>
-<p>You can now take off the keyboard, and HDMI cable from the Pi. After a couple of seconds, log in to the Pi using the SSH on your machine:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">ssh pi@192.168.0.2</code></pre></div>
-<p>Note that we are using the user <code>pi</code> with the static IP address configured in a previous step. Replace the IP address with the one you have configured.</p>
-
+systemctl start ssh.service
+</code></pre></div><p>After configuring the static IP adress and SSH, reboot the Pi:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo reboot
+</code></pre></div><p>You can now take off the keyboard, and HDMI cable from the Pi. After a couple of seconds, log in to the Pi using the SSH on your machine:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">ssh pi@192.168.0.2
+</code></pre></div><p>Note that we are using the user <code>pi</code> with the static IP address configured in a previous step. Replace the IP address with the one you have configured.</p>
 <h2 id="pi-hole-and-dns-forwarding">Pi-hole and DNS Forwarding</h2>
-
-<p>Pi-Hole works both as a cache and DNS forwarder. This means that:
-1. It takes a domain name query such as <code>google.com.br</code>
-2. If the domain is in one its blocklists, then the IP address returned is <code>0.0.0.0</code>, which is not routable, i.e. it cannot be accessed over the internet. Therefore, its renders blocked domains unaccessible. Otherwise, it goes to step 3.
-3. If it doesn&rsquo;t know the IP address of this domain locally (i.e. the address is not in cache), it queries an upstream DNS server (e.g. Google DNS) to obtain the IP address
-4. The IP address is saved locally in the cache, and the address is returned to the user.</p>
-
+<p>Pi-Hole works both as a cache and DNS forwarder. This means that:</p>
+<ol>
+<li>It takes a domain name query such as <code>google.com.br</code></li>
+<li>If the domain is in one its blocklists, then the IP address returned is <code>0.0.0.0</code>, which is not routable, i.e. it cannot be accessed over the internet. Therefore, its renders blocked domains unaccessible. Otherwise, it goes to step 3.</li>
+<li>If it doesn't know the IP address of this domain locally (i.e. the address is not in cache), it queries an upstream DNS server (e.g. Google DNS) to obtain the IP address</li>
+<li>The IP address is saved locally in the cache, and the address is returned to the user.</li>
+</ol>
 <h3 id="pi-hole-setup">Pi-hole Setup</h3>
-
 <p>Update the system packages:</p>
-
 <pre><code>apt-get update &amp;&amp; apt-get upgrade -y
-</code></pre>
-
-<p>Install pi-hole using the following command:</p>
-
+</code></pre><p>Install pi-hole using the following command:</p>
 <pre><code>curl -sSL https://install.pi-hole.net | bash
-</code></pre>
-
-<p>Follow the installation process, selecting your upstream DNS providers (e.g. Google DNS or Cloud9). I would also recommend installing the web interface, this option will be shown in the pi-hole installer. Your output should be something like the <a href="https://gist.githubusercontent.com/joaovictortr/a8b81b91d40de77c2c5b0cd95a4068f8/raw/0bd78b127f24d6163731daa979d76b959be43fb8/output.txt">this</a>.</p>
-
+</code></pre><p>Follow the installation process, selecting your upstream DNS providers (e.g. Google DNS or Cloud9). I would also recommend installing the web interface, this option will be shown in the pi-hole installer. Your output should be something like the <a href="https://gist.githubusercontent.com/joaovictortr/a8b81b91d40de77c2c5b0cd95a4068f8/raw/0bd78b127f24d6163731daa979d76b959be43fb8/output.txt">this</a>.</p>
 <p>Change the administration password of Pi-Hole:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">pihole -a -p</code></pre></div>
-<h3 id="firewall-optional">Firewall (optional)</h3>
-
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">pihole -a -p
+</code></pre></div><h3 id="firewall-optional">Firewall (optional)</h3>
 <p>In order to secure our Pi, we will install <a href="https://help.ubuntu.com/community/UFW">ufw</a> (short for &lsquo;Uncomplicated Firewall&rsquo;), which is simpler to configure than iptables.</p>
-
 <p>First, install ufw:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install -y ufw</code></pre></div>
-<p>Allow the ports of the services provided by pi-hole:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># SSH
-</span><span class="c1"></span>sudo ufw allow <span class="m">22</span>/tcp
-<span class="c1"># DNS
-</span><span class="c1"></span>sudo ufw allow <span class="m">53</span>/udp
-<span class="c1"># DHCP server (optional), only if pi-hole will be your DHCP server
-</span><span class="c1"></span>sudo ufw allow <span class="m">67</span>/udp
-sudo ufw allow <span class="m">68</span>/udp
-<span class="c1"># pi-hole web interface
-</span><span class="c1"></span>sudo ufw allow <span class="m">80</span>/tcp</code></pre></div>
-<p>and enable the firewall:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install -y ufw
+</code></pre></div><p>Allow the ports of the services provided by pi-hole:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># SSH</span>
+sudo ufw allow 22/tcp
+<span class="c1"># DNS</span>
+sudo ufw allow 53/udp
+<span class="c1"># DHCP server (optional), only if pi-hole will be your DHCP server</span>
+sudo ufw allow 67/udp
+sudo ufw allow 68/udp
+<span class="c1"># pi-hole web interface</span>
+sudo ufw allow 80/tcp
+</code></pre></div><p>and enable the firewall:</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo ufw <span class="nb">enable</span>
-sudo ufw status verbose</code></pre></div>
-<h3 id="web-interface">Web Interface</h3>
-
+sudo ufw status verbose
+</code></pre></div><h3 id="web-interface">Web Interface</h3>
 <p>Access the web interface on <code>http://192.168.0.2/admin</code>, and use the password you have configured earlier on. It should look like the following:</p>
-
-<p><img src="https://i.imgur.com/Y87jO4w.png" alt="Pi-hole Web Administration Interface" /></p>
-
+<p><img src="https://i.imgur.com/Y87jO4w.png" alt="Pi-hole Web Administration Interface"></p>
 <h2 id="concluding-remarks">Concluding Remarks</h2>
-
 <p>Make sure all the hosts on your network use the IP address of the pi-hole as their only DNS server.</p>
-
 <p>As a bonus, one can also harden the SSH server, if the Pi is accessible to the public internet, and restrict the SSH port only to local addresses is also a good security measure.</p>
-
 <p>If you reached this point, please let me know if you have any thoughts or comments on this post, the details for contact can be found in the <a href="https://joaovictortr.eti.br/about/">About</a> page.</p>
 
 
@@ -268,12 +220,13 @@ sudo ufw status verbose</code></pre></div>
 
 </main>
     <footer>
-        <h6> | 
+        <h6> |
             Rendered by <a href="https://gohugo.io" title="Hugo">Hugo</a> |
             <a href="https://joaovictortr.eti.brindex.xml">Subscribe</a></h6>
     </footer>
 </div>
 <script src="/js/scripts.js"></script>
+
 </body>
 
 </html>

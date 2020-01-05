@@ -1,35 +1,321 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Posts on João Victor Risso</title>
-    <link>https://joaovictortr.eti.br/posts/</link>
-    <description>Recent content in Posts on João Victor Risso</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 03 Jun 2018 17:54:34 -0300</lastBuildDate>
-    
-	<atom:link href="https://joaovictortr.eti.br/posts/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Pi-Hole Setup on Raspberry Pi 3</title>
-      <link>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</link>
-      <pubDate>Sun, 03 Jun 2018 17:54:34 -0300</pubDate>
-      
-      <guid>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</guid>
-      <description>In this post, I will cover how to install a Raspbian system from scratch, along with the setup of pi-hole, to block internet trackers on the network level.
-Pi-Hole serves both as a DNS forwarder and cache, and should be configured as the DNS server for your network. This guarantees that all users of your network will be automatically shielded from internet tracking. You also might notice a reduction in bandwidth usage, since assets from ad networks and trackers are not loaded because of the &amp;lsquo;blackholing&amp;rsquo;.</description>
-    </item>
-    
-    <item>
-      <title>Rocket.chat Server Setup on Reverse Proxy with SSL</title>
-      <link>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</link>
-      <pubDate>Wed, 16 May 2018 19:41:34 -0300</pubDate>
-      
-      <guid>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</guid>
-      <description>Rocket.Chat is web chat server, with client for a wide range of platforms, including Android and iOS. It allows individuals, communities and companies to build and maintain their own chat platforms, without relying on third-party services.
-The highlight features of Rocket.Chat are:
- Videoconferences Voice messages Native and mobile applications Filesharing Preview of links from popular sites (e.g. Facebook, Youtube)  Hardware Minimum hardware requirements to run a Rocket.Chat server are:</description>
-    </item>
-    
-  </channel>
-</rss>
+
+   <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+     <channel>
+       <title>Posts on João Victor Risso</title>
+       <link>https://joaovictortr.eti.br/posts/</link>
+       <description>Recent content in Posts on João Victor Risso</description>
+       <generator>Hugo -- gohugo.io</generator>
+       <lastBuildDate>Sun, 03 Jun 2018 17:54:34 -0300</lastBuildDate>
+       
+           <atom:link href="https://joaovictortr.eti.br/posts/index.xml" rel="self" type="application/rss+xml" />
+       
+       
+       <item>
+         <title>Pi-Hole Setup on Raspberry Pi 3</title>
+         <link>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</link>
+         <pubDate>Sun, 03 Jun 2018 17:54:34 -0300</pubDate>
+         
+         <guid>https://joaovictortr.eti.br/posts/20180603-pihole-raspberry-pi-setup/</guid>
+         <description>&lt;p&gt;In this post, I will cover how to install a Raspbian system from scratch, along with the setup of pi-hole, to block &lt;a href=&#34;https://theconversation.com/someones-looking-at-you-welcome-to-the-surveillance-economy-16357&#34;&gt;internet trackers&lt;/a&gt; on the network level.&lt;/p&gt;
+&lt;p&gt;Pi-Hole serves both as a DNS &lt;a href=&#34;http://social.dnsmadeeasy.com/blog/understanding-dns-forwarding/&#34;&gt;forwarder&lt;/a&gt; and &lt;a href=&#34;https://www.lifewire.com/what-is-a-dns-cache-817514&#34;&gt;cache&lt;/a&gt;, and should be configured as the DNS server for your network. This guarantees that all users of your network will be automatically shielded from internet tracking. You also might notice a reduction in bandwidth usage, since assets from ad networks and trackers are not loaded because of the &amp;lsquo;blackholing&amp;rsquo;. This process is explained further down in this post.&lt;/p&gt;
+&lt;p&gt;In order to follow this tutorial, there are a few hardware requirements:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Raspberri Pi, either version 2 or 3 should work.&lt;/li&gt;
+&lt;li&gt;HDMI cable&lt;/li&gt;
+&lt;li&gt;Monitor with a HDMI port&lt;/li&gt;
+&lt;li&gt;USB keyboard&lt;/li&gt;
+&lt;li&gt;SD Card&lt;/li&gt;
+&lt;li&gt;Ethernet cable, to connect the Pi to the router&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you have Raspbian already setup, you can skip to the section &amp;lsquo;Pi-hole and DNS Forwarding&amp;rsquo;. Make sure, however, that your Raspbian has a static IP address setup for it.&lt;/p&gt;
+&lt;h2 id=&#34;raspbian-setup&#34;&gt;Raspbian Setup&lt;/h2&gt;
+&lt;p&gt;Insert the SD card in the computer, and check for its name using the following command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;lsblk
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Which shows an output like the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NAME            MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda               8:0    0 931,5G  0 disk 
+├─sda1            8:1    0   512M  0 part /boot/efi
+├─sda2            8:2    0     1G  0 part /boot
+└─sda3            8:3    0   930G  0 part 
+  ├─fedora-root 253:0    0    50G  0 lvm  /
+  └─fedora-home 253:1    0   880G  0 lvm  /home
+mmcblk0         179:0    0  14,9G  0 disk 
+├─mmcblk0p1     179:1    0   1,6G  0 part 
+├─mmcblk0p2     179:2    0     1K  0 part 
+├─mmcblk0p5     179:5    0    32M  0 part 
+├─mmcblk0p6     179:6    0    69M  0 part 
+└─mmcblk0p7     179:7    0  13,2G  0 part 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In this case, &lt;code&gt;sda&lt;/code&gt; is the hard drive from the computer, and &lt;code&gt;mmcblk0&lt;/code&gt; is the SD card. Therefore, &lt;code&gt;mmcblk0&lt;/code&gt; is the device we must use to flash the SD card. Beware, that (wrongly) writing to the hard drive would corrupt your filesystem!&lt;/p&gt;
+&lt;p&gt;Download the Raspbian Lite image from the Raspbian website. Then, we extract the image and write its contents to the SD card using the &lt;code&gt;dd&lt;/code&gt; Linux utility, as follows:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;unzip 2018-04-18-raspbian-stretch-lite.zip &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;sudo dd &lt;span class=&#34;nv&#34;&gt;bs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;4M &lt;span class=&#34;nv&#34;&gt;conv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;fsync &lt;span class=&#34;nv&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;progress &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;2018-04-18-raspbian-stretch-lite.img &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nv&#34;&gt;of&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/dev/mmcblk0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In Unix and Linux operating systems, everything is represented as a file, including disks and SD cards. &lt;code&gt;dd&lt;/code&gt; takes the content of a file specified by &lt;code&gt;if&lt;/code&gt; and writes its contents to the file &lt;code&gt;of&lt;/code&gt;. In our case, we are taking an input file (&lt;code&gt;2018-04-18-raspbian-stretch-lite.img&lt;/code&gt;) and writing it to a special file (&lt;code&gt;/dev/mmcblk0&lt;/code&gt;), which represents the SD card.&lt;/p&gt;
+&lt;p&gt;The parameters passed to dd have the following meaning:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;if: stands for &lt;em&gt;input file&lt;/em&gt;, the file from which the content will be read.&lt;/li&gt;
+&lt;li&gt;of: stands for &lt;em&gt;output file&lt;/em&gt;, the file to which the contents of &lt;em&gt;if&lt;/em&gt; will be written.&lt;/li&gt;
+&lt;li&gt;bs: stands for &lt;em&gt;block size&lt;/em&gt;, how many bytes are read from the input and written to the output file at once.&lt;/li&gt;
+&lt;li&gt;conv: stands for &lt;em&gt;conversion&lt;/em&gt;, it applies comma separated operations on top of the input file, before writing it to the output file. &lt;code&gt;fsync&lt;/code&gt; ensures that the kernel writes the data to the output file as well as metadata to the physical device before finishing. This is required, because the kernel might not promptly write the data to the SD card, which would leave the SD card corrupt if we took it off the computer before all the data was written to it.&lt;/li&gt;
+&lt;li&gt;status: amount of information printed to &lt;code&gt;stderr&lt;/code&gt;. &lt;code&gt;progress&lt;/code&gt; shows periodic transfer statistics, which allows one to track the speed and amount of data copied to the SD card.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Depending on your disk and SD card performance, this might take a while as the image is around 1.7 GB large. After the data is written to the SD card, take it off the computer and put it in to the Raspberry Pi.&lt;/p&gt;
+&lt;p&gt;Connect the Pi to an energy source, the keyboard and the monitor (using the HDMI cable). It should boot to a screen like the following:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lHoPtWO.jpg&#34; alt=&#34;Raspbian 9 Login&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Log in using &lt;code&gt;pi&lt;/code&gt; as the username and &lt;code&gt;raspberry&lt;/code&gt; as the password.
+Change the default password for &lt;code&gt;pi&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You will have to provide the current password (&lt;code&gt;raspberry&lt;/code&gt;), and type the new password twice (once more, for verification purposes).&lt;/p&gt;
+&lt;p&gt;In the next section, a static IP address and SSH are setup, so there will be no more need for the monitor and keyboard.&lt;/p&gt;
+&lt;h3 id=&#34;static-ip-address&#34;&gt;Static IP Address&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;nano /etc/dhcpcd.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Add the following to the end of the file:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;interface eth0
+static &lt;span class=&#34;nv&#34;&gt;ip_address&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;192.168.0.2/24
+static &lt;span class=&#34;nv&#34;&gt;routers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;192.168.0.1
+static &lt;span class=&#34;nv&#34;&gt;domain_name_servers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;208.67.220.220
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In your setup, replace the:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;IP address (&lt;code&gt;ip_address&lt;/code&gt;) with the local IP address of the Pi in your network, in this case &lt;code&gt;192.168.0.2&lt;/code&gt; with a network mask of 24 bits, i.e. &lt;code&gt;255.255.255.0&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;routers&lt;/code&gt; with the IP address of your router, in this case it is &lt;code&gt;192.168.0.1&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;domain_name_servers&lt;/code&gt; with the IP address of the DNS resolver for your network. If you don&#39;t know what is the IP address of your DNS resolver, you can use either &lt;code&gt;8.8.8.8&lt;/code&gt; (Google DNS) or &lt;code&gt;1.1.1.1&lt;/code&gt; (Cloudflare DNS).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;ssh-setup&#34;&gt;SSH Setup&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;systemctl &lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; ssh.service
+systemctl start ssh.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;After configuring the static IP adress and SSH, reboot the Pi:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;sudo reboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You can now take off the keyboard, and HDMI cable from the Pi. After a couple of seconds, log in to the Pi using the SSH on your machine:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;ssh pi@192.168.0.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Note that we are using the user &lt;code&gt;pi&lt;/code&gt; with the static IP address configured in a previous step. Replace the IP address with the one you have configured.&lt;/p&gt;
+&lt;h2 id=&#34;pi-hole-and-dns-forwarding&#34;&gt;Pi-hole and DNS Forwarding&lt;/h2&gt;
+&lt;p&gt;Pi-Hole works both as a cache and DNS forwarder. This means that:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;It takes a domain name query such as &lt;code&gt;google.com.br&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;If the domain is in one its blocklists, then the IP address returned is &lt;code&gt;0.0.0.0&lt;/code&gt;, which is not routable, i.e. it cannot be accessed over the internet. Therefore, its renders blocked domains unaccessible. Otherwise, it goes to step 3.&lt;/li&gt;
+&lt;li&gt;If it doesn&#39;t know the IP address of this domain locally (i.e. the address is not in cache), it queries an upstream DNS server (e.g. Google DNS) to obtain the IP address&lt;/li&gt;
+&lt;li&gt;The IP address is saved locally in the cache, and the address is returned to the user.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;pi-hole-setup&#34;&gt;Pi-hole Setup&lt;/h3&gt;
+&lt;p&gt;Update the system packages:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apt-get update &amp;amp;&amp;amp; apt-get upgrade -y
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Install pi-hole using the following command:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -sSL https://install.pi-hole.net | bash
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Follow the installation process, selecting your upstream DNS providers (e.g. Google DNS or Cloud9). I would also recommend installing the web interface, this option will be shown in the pi-hole installer. Your output should be something like the &lt;a href=&#34;https://gist.githubusercontent.com/joaovictortr/a8b81b91d40de77c2c5b0cd95a4068f8/raw/0bd78b127f24d6163731daa979d76b959be43fb8/output.txt&#34;&gt;this&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Change the administration password of Pi-Hole:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;pihole -a -p
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;firewall-optional&#34;&gt;Firewall (optional)&lt;/h3&gt;
+&lt;p&gt;In order to secure our Pi, we will install &lt;a href=&#34;https://help.ubuntu.com/community/UFW&#34;&gt;ufw&lt;/a&gt; (short for &amp;lsquo;Uncomplicated Firewall&amp;rsquo;), which is simpler to configure than iptables.&lt;/p&gt;
+&lt;p&gt;First, install ufw:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;sudo apt-get install -y ufw
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Allow the ports of the services provided by pi-hole:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# SSH&lt;/span&gt;
+sudo ufw allow 22/tcp
+&lt;span class=&#34;c1&#34;&gt;# DNS&lt;/span&gt;
+sudo ufw allow 53/udp
+&lt;span class=&#34;c1&#34;&gt;# DHCP server (optional), only if pi-hole will be your DHCP server&lt;/span&gt;
+sudo ufw allow 67/udp
+sudo ufw allow 68/udp
+&lt;span class=&#34;c1&#34;&gt;# pi-hole web interface&lt;/span&gt;
+sudo ufw allow 80/tcp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;and enable the firewall:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;sudo ufw &lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt;
+sudo ufw status verbose
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;web-interface&#34;&gt;Web Interface&lt;/h3&gt;
+&lt;p&gt;Access the web interface on &lt;code&gt;http://192.168.0.2/admin&lt;/code&gt;, and use the password you have configured earlier on. It should look like the following:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Y87jO4w.png&#34; alt=&#34;Pi-hole Web Administration Interface&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;concluding-remarks&#34;&gt;Concluding Remarks&lt;/h2&gt;
+&lt;p&gt;Make sure all the hosts on your network use the IP address of the pi-hole as their only DNS server.&lt;/p&gt;
+&lt;p&gt;As a bonus, one can also harden the SSH server, if the Pi is accessible to the public internet, and restrict the SSH port only to local addresses is also a good security measure.&lt;/p&gt;
+&lt;p&gt;If you reached this point, please let me know if you have any thoughts or comments on this post, the details for contact can be found in the &lt;a href=&#34;https://joaovictortr.eti.br/about/&#34;&gt;About&lt;/a&gt; page.&lt;/p&gt;
+</description>
+       </item>
+       
+       <item>
+         <title>Rocket.chat Server Setup on Reverse Proxy with SSL</title>
+         <link>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</link>
+         <pubDate>Wed, 16 May 2018 19:41:34 -0300</pubDate>
+         
+         <guid>https://joaovictortr.eti.br/posts/20180516-rocketchat-setup-debian-reverse-proxy/</guid>
+         <description>&lt;p&gt;&lt;a href=&#34;https://rocket.chat&#34;&gt;Rocket.Chat&lt;/a&gt; is web chat server, with client for a wide range of platforms, including &lt;a href=&#34;https://play.google.com/store/apps/details?id=com.konecty.rocket.chat&#34;&gt;Android&lt;/a&gt; and &lt;a href=&#34;https://itunes.apple.com/us/app/rocket-chat/id1028869439&#34;&gt;iOS&lt;/a&gt;. It allows
+individuals, communities and companies to build and maintain their own chat platforms,
+without relying on third-party services.&lt;/p&gt;
+&lt;p&gt;The highlight features of Rocket.Chat are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Videoconferences&lt;/li&gt;
+&lt;li&gt;Voice messages&lt;/li&gt;
+&lt;li&gt;Native and mobile applications&lt;/li&gt;
+&lt;li&gt;Filesharing&lt;/li&gt;
+&lt;li&gt;Preview of links from popular sites (e.g. Facebook, Youtube)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;hardware&#34;&gt;Hardware&lt;/h2&gt;
+&lt;p&gt;Minimum hardware requirements to run a Rocket.Chat server are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CPU: single core, with a clock of at least 2 GHz&lt;/li&gt;
+&lt;li&gt;Memory: 1 GB&lt;/li&gt;
+&lt;li&gt;Storage: 30 GB&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;Before installing the Rocket.Chat server, we need to install the following softwares:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MongoDB&lt;/li&gt;
+&lt;li&gt;Node.js, whose version must be at least 4.5.0&lt;/li&gt;
+&lt;li&gt;Nginx&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For this tutorial, it is assumed that you also have root acces to the machine.&lt;/p&gt;
+&lt;p&gt;In the next sections, the instructions to install each of these softwares in Debian 8
+will be presented.&lt;/p&gt;
+&lt;h3 id=&#34;installing-mongodb&#34;&gt;Installing MongoDB&lt;/h3&gt;
+&lt;p&gt;First, we will install MongoDB. We must import the public key used by the package management system:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And then add the MongoDB repository to our package sources list:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Update the local package lists:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;apt-get update
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And install MongoDB:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;apt-get install --yes mongodb-org
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now, let&#39;s start the MongoDB service:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;systemctl start mongod.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;installing-nodejs&#34;&gt;Installing Node.js&lt;/h3&gt;
+&lt;p&gt;We will now install npm and packages to compile Node.js packages:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;apt-get install --yes npm build-essential
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then, we will use the &lt;code&gt;n&lt;/code&gt; package, to install the minimum required version of Node.js to run Rocket.Chat, which is the version 4.5:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;npm install -g n
+n 4.5  &lt;span class=&#34;c1&#34;&gt;# Installs the appropriate version of Node.js&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;installing-nginx&#34;&gt;Installing Nginx&lt;/h3&gt;
+&lt;p&gt;Finally, we must install Nginx, using the following command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;apt-get install -y nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;rocketchat-server-setup&#34;&gt;Rocket.Chat Server Setup&lt;/h1&gt;
+&lt;p&gt;After installing the prerequisites, we proceed to install the Rocket.Chat server. In this section,
+we&#39;ll cover how to setup our Rocket.Chat server in a secure manner, using a non-login user along
+with a systemd service to manage the basic operations such as starting and stopping the server.&lt;/p&gt;
+&lt;p&gt;Download Rocket.Chat&#39;s stable release from the official distribution:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;wget https://rocket.chat/releases/latest/download -O rocket.chat.tgz
+tar zxvf rocket.chat.tgz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will expand everything into the &lt;code&gt;bundle&lt;/code&gt; directory, and then we&#39;ll move it
+to its own directory within the &lt;code&gt;/opt&lt;/code&gt; directory and start the installation process:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;mv bundle/ /opt/rocket.chat
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; /opt/rocket.chat/programs/server  &lt;span class=&#34;c1&#34;&gt;# Enter the server directory&lt;/span&gt;
+npm install  &lt;span class=&#34;c1&#34;&gt;# Install server dependencies&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; ../..  &lt;span class=&#34;c1&#34;&gt;# Go back to rocket.chat&amp;#39;s root directory&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then, we&#39;ll configure some of the server&#39;s parameters and start it:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;ROOT_URL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;http://your-host-name-here:3000/
+&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;MONGO_URL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;mongodb://localhost:27017/rocketchat
+&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;PORT&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;3000&lt;/span&gt;
+/usr/local/bin/node /opt/rocket.chat/main.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You should adjust the &lt;code&gt;ROOT_URL&lt;/code&gt; variable with your IP address or hostname. You can
+also change the &lt;code&gt;PORT&lt;/code&gt; variable, so the server will start on another port, other than 3000.&lt;/p&gt;
+&lt;p&gt;If everything goes well, you will see something like the following output:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;➔ +---------------------------------------------------+
+➔ |                   SERVER RUNNING                  |
+➔ +---------------------------------------------------+
+➔ |                                                   |
+➔ |  Rocket.Chat Version: 0.56.0                      |
+➔ |       NodeJS Version: 4.5.0 - x64                 |
+➔ |             Platform: linux                       |
+➔ |         Process Port: 3000                        |
+➔ |             Site URL: http://your-ip-addr:3000/   |
+➔ |     ReplicaSet OpLog: Disabled                    |
+➔ |          Commit Hash: 3018807507                  |
+➔ |        Commit Branch: HEAD                        |
+➔ |                                                   |
+➔ +---------------------------------------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;non-login-user&#34;&gt;Non-login user&lt;/h3&gt;
+&lt;p&gt;We will add a non-login user and a group &lt;code&gt;rocketchat&lt;/code&gt; to run the Rocket.Chat server process:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;useradd -M rocketchat
+usermod -L rocketchat
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The first command creates a &lt;code&gt;rocketchat&lt;/code&gt; user without a home directory, and the second locks
+any logins to that account. A &lt;code&gt;rocketchat&lt;/code&gt; group is also added when the user is created.&lt;/p&gt;
+&lt;h3 id=&#34;rocketchat-service&#34;&gt;Rocket.Chat Service&lt;/h3&gt;
+&lt;p&gt;Now, we&#39;ll create a service to ease the basic management of the server, such as
+starting, stopping and restarting the server. It can also start the server automatically
+once the server boots, and run the server using the &lt;code&gt;rocketchat&lt;/code&gt; user.&lt;/p&gt;
+&lt;p&gt;Create the service in the &lt;code&gt;/etc/systemd/system/rocketchat.service&lt;/code&gt; file to automate
+Rocket.Chat management:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;Unit&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;Description&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;Rocket.Chat Server
+&lt;span class=&#34;nv&#34;&gt;Requires&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;After&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;mongod.service       &lt;span class=&#34;c1&#34;&gt;# Requires the mongod service to run first&lt;/span&gt;
+
+&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;Service&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;ExecStart&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/usr/local/bin/node /opt/rocket.chat/main.js
+&lt;span class=&#34;nv&#34;&gt;WorkingDirectory&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;/opt/rocket.chat  &lt;span class=&#34;c1&#34;&gt;# Set to rocket.chat directory&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;Restart&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;always
+&lt;span class=&#34;c1&#34;&gt;# Restart service after 10 seconds if node service crashes&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;RestartSec&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# Output to syslog&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;StandardOutput&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;syslog
+&lt;span class=&#34;nv&#34;&gt;StandardError&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;syslog
+&lt;span class=&#34;nv&#34;&gt;SyslogIdentifier&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;rocketchat_server
+&lt;span class=&#34;nv&#34;&gt;User&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;rocketchat  &lt;span class=&#34;c1&#34;&gt;# Run the process using the rocketchat user&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;Group&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;rocketchat
+&lt;span class=&#34;nv&#34;&gt;Environment&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;ROOT_URL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;http://your-hostname-here.ipadress:3000/ &lt;span class=&#34;nv&#34;&gt;MONGO_URL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;mongodb://localhost:27017/rocketchat &lt;span class=&#34;nv&#34;&gt;PORT&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;3000&lt;/span&gt;
+
+&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;Install&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;WantedBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;multi-user.target
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Customize the &lt;code&gt;Environment&lt;/code&gt; variable of the service to suit your environment,
+specifically adjust the &lt;code&gt;ROOT_URL&lt;/code&gt; to your IP address or hostname.&lt;/p&gt;
+&lt;p&gt;Then, enable the service so that it can start when the server boots, and then start it:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;systemctl &lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; rocketchat.service
+systemctl start rocketchat.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Check if it is running properly using the following command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;systemctl status rocketchat.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;configuring-nginx-reverse-proxy&#34;&gt;Configuring Nginx Reverse Proxy&lt;/h3&gt;
+&lt;p&gt;In this section of the tutorial, it is assumed that you already have a SSL certificate
+in place. If you don&#39;t have a SSL certificate, there is a &lt;a href=&#34;https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-debian-8&#34;&gt;tutorial&lt;/a&gt; in the DigitalOcean community to help you setup your Let&#39;s Encrypt certificate.&lt;/p&gt;
+&lt;p&gt;Add the following lines to your Nginx configuration, in the &lt;code&gt;/etc/nginx/sites-enabled/default&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Upstreams&lt;/span&gt;
+upstream backend &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+    server 127.0.0.1:3000&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# HTTPS Server&lt;/span&gt;
+server &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+    listen 443&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    server_name your_hostname.com&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+    error_log /var/log/nginx/rocketchat.access.log&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+    ssl on&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    ssl_certificate /etc/nginx/certificate.crt&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    ssl_certificate_key /etc/nginx/certificate.key&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# don’t use SSLv3 ref: POODLE&lt;/span&gt;
+
+    location / &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+        proxy_pass http://backend/&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_http_version 1.1&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_set_header Upgrade &lt;span class=&#34;nv&#34;&gt;$http_upgrade&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_set_header Connection &lt;span class=&#34;s2&#34;&gt;&amp;#34;upgrade&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_set_header Host &lt;span class=&#34;nv&#34;&gt;$http_host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+        proxy_set_header X-Real-IP &lt;span class=&#34;nv&#34;&gt;$remote_addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_set_header X-Forward-For &lt;span class=&#34;nv&#34;&gt;$proxy_add_x_forwarded_for&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_set_header X-Forward-Proto http&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        proxy_set_header X-Nginx-Proxy true&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+        proxy_redirect off&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You should adjust the &lt;code&gt;server_name&lt;/code&gt;, &lt;code&gt;ssl_certificate&lt;/code&gt; and &lt;code&gt;ssl_certificate_key&lt;/code&gt; variables to your IP address or domain, path of SSL certificate and certificate key, respectively.&lt;/p&gt;
+&lt;p&gt;Port 3000 can be blocked for external connections, and we can access our Rocket.Chat instance through Nginx:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;https://you-ip-or-hostname/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;using-and-configuring-rocketchat&#34;&gt;Using and Configuring Rocket.Chat&lt;/h1&gt;
+&lt;p&gt;In your first login, you will have to create an account, on the &lt;code&gt;Register a new account&lt;/code&gt; link. The first account, will be assigned as the administrator of the Rocket.Chat server. The login and registration pages are shown in the two figures below.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZXhiu4N.png&#34; alt=&#34;Rocket.Chat login page&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In the registration, you just have to supply your e-mail, name and password, as shown below:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/R1RvF3x.png&#34; alt=&#34;Rocket.Chat register page&#34;&gt;&lt;/p&gt;
+&lt;p&gt;When you first login, you should see a page that looks like the following figure:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/xJL9hQJ.png&#34; alt=&#34;Rocket.Chat first login&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After your first login, you will be able to access the administrator panel by clicking on your user name,
+and then clicking on the &lt;code&gt;Administration&lt;/code&gt; link. The administration panel is shown in figure below:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ryxqZWA.png&#34; alt=&#34;Rocket.Chat administrator panel&#34;&gt;&lt;/p&gt;
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;In this tutorial, you have learned how to setup your own Rocket.Chat server in secure way,
+and also setting it up behind an Nginx reverse proxy. Rocket.Chat is a great web server chat
+solution to build and run your own communication channels, and it supports a wide range of
+clients.&lt;/p&gt;
+</description>
+       </item>
+       
+     </channel>
+   </rss>
